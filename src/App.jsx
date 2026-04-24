@@ -11,6 +11,7 @@ import Team from './pages/Team';
 import Extension from './pages/Extension';
 import Dashboard from './pages/Dashboard';
 import Rewards from './pages/Rewards';
+import Draftly from './pages/Draftly';
 import AiCoach from './components/AiCoach';
 import Bootloader from './components/Bootloader';
 import { useState, useEffect } from 'react';
@@ -29,7 +30,7 @@ function ScrollToTop() {
 function AppRoutes() {
   const [booted, setBooted] = useState(false);
   const location = useLocation();
-  const isDashboard = location.pathname === '/dashboard';
+  const isAppView = location.pathname === '/dashboard' || location.pathname === '/draftly';
 
   return (
     <>
@@ -40,7 +41,7 @@ function AppRoutes() {
       <div className="hex-grid" />
       {!booted && <Bootloader onComplete={() => setBooted(true)} />}
       <div className="grid-bg" />
-      {!isDashboard && <Navbar />}
+      {!isAppView && <Navbar />}
       <main style={{ minHeight: '100vh', opacity: booted ? 1 : 0, transition: 'opacity 1s ease-in' }}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -51,10 +52,11 @@ function AppRoutes() {
           <Route path="/extension" element={<Extension />} />
           <Route path="/rewards" element={<Rewards />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/draftly" element={<Draftly />} />
         </Routes>
       </main>
       {booted && <AiCoach />}
-      {!isDashboard && <Footer />}
+      {!isAppView && <Footer />}
     </>
   );
 }
