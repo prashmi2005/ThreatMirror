@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, Check, Shield, AlertTriangle, Laptop, Smartphone, Monitor, Loader2 } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Check, Shield, AlertTriangle, Laptop, Smartphone, Monitor, Loader2, Users } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useAnimations';
 import { useUser } from '../context/UserContext';
 import styles from './Onboard.module.css';
