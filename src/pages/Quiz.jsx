@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { CheckCircle, XCircle, AlertTriangle, ArrowRight, RotateCcw, Shield } from 'lucide-react';
 import { quizzes, triggerDescriptions } from '../data/quizData';
 import { useScrollAnimation } from '../hooks/useAnimations';
+import { useUser } from '../context/UserContext';
 import styles from './Quiz.module.css';
 
 function AnimatedSection({ children, className = '', delay = 0 }) {
@@ -15,6 +16,7 @@ function AnimatedSection({ children, className = '', delay = 0 }) {
 }
 
 export default function Quiz() {
+  const { userProfile } = useUser();
   const [selectedRole, setSelectedRole] = useState(null);
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState([]);
@@ -56,7 +58,6 @@ export default function Quiz() {
   const total = answers.length;
   const scorePercent = total > 0 ? Math.round((score / total) * 100) : 0;
 
-  // Build vulnerability profile from wrong answers
   const vulnerabilities = {};
   answers.forEach(a => {
     if (!a.correct && a.trigger) {
@@ -70,6 +71,7 @@ export default function Quiz() {
 
   const allTriggers = ['urgency', 'authority', 'curiosity', 'familiarity', 'fearOfLoss', 'socialProof'];
   const maxVuln = Math.max(...allTriggers.map(t => vulnerabilities[t] || 0), 1);
+  const topWeakness = allTriggers.reduce((a, b) => (vulnerabilities[a] || 0) > (vulnerabilities[b] || 0) ? a : b);
 
   const getScoreColor = () => {
     if (scorePercent >= 80) return 'var(--accent-green)';
@@ -84,6 +86,10 @@ export default function Quiz() {
     return 'var(--accent-green)';
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <div className={`${styles.quiz} container`}>
       <AnimatedSection className={styles.header}>
@@ -91,19 +97,14 @@ export default function Quiz() {
         <h1 className="section-title">Can you spot the phishing?</h1>
         <p className="section-subtitle" style={{ margin: '0 auto' }}>
           Choose your role and test yourself with realistic email scenarios.
-          See which psychological triggers you're most vulnerable to.
         </p>
       </AnimatedSection>
 
-      {/* Role Selection */}
       {!selectedRole && (
         <div className={styles.roleGrid}>
           {roles.map((key, idx) => (
             <AnimatedSection key={key} delay={idx * 100}>
-              <div
-                className={styles.roleCard}
-                onClick={() => setSelectedRole(key)}
-              >
+              <div className={styles.roleCard} onClick={() => setSelectedRole(key)}>
                 <span className={styles.roleEmoji}>{quizzes[key].icon}</span>
                 <span className={styles.roleName}>{quizzes[key].role}</span>
               </div>
@@ -112,7 +113,6 @@ export default function Quiz() {
         </div>
       )}
 
-      {/* Quiz Active */}
       {selectedRole && !finished && question && (
         <div className={styles.quizActive}>
           <div className={styles.progress}>
@@ -149,24 +149,6 @@ export default function Quiz() {
                 {lastAnswer.correct ? <><CheckCircle size={20} /> Nice catch!</> : <><XCircle size={20} /> That was a tricky one</>}
               </div>
               <p className={styles.feedbackDesc}>{question.explanation}</p>
-
-              {question.flags.length > 0 && (
-                <div className={styles.flagsList}>
-                  {question.flags.map((flag, i) => (
-                    <div key={i} className={styles.flag}>
-                      <AlertTriangle size={12} /> {flag}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {question.trigger && (
-                <div>
-                  <span style={{ fontSize: 12, color: 'var(--text-tertiary)', marginRight: 8 }}>Psychological trigger:</span>
-                  <span className={styles.triggerBadge}>{question.trigger}</span>
-                </div>
-              )}
-
               <button className={`btn btn-primary ${styles.nextBtn}`} onClick={handleNext}>
                 {currentQ + 1 >= quiz.questions.length ? 'See Results' : 'Next Question'} <ArrowRight size={14} />
               </button>
@@ -175,7 +157,6 @@ export default function Quiz() {
         </div>
       )}
 
-      {/* Results */}
       {finished && (
         <div className={styles.results}>
           <div className={styles.scoreCircle} style={{ borderColor: getScoreColor() }}>
@@ -184,47 +165,52 @@ export default function Quiz() {
           </div>
 
           <h2 className={styles.resultTitle}>
-            {scorePercent >= 80 ? '🎉 Excellent awareness!' :
-             scorePercent >= 60 ? '👍 Good, but room to improve' :
-             '🎯 Great learning opportunity'}
+            {scorePercent >= 80 ? '🎉 Excellent awareness!' : '🎯 Learning opportunity'}
           </h2>
-          <p className={styles.resultDesc}>
-            {scorePercent >= 80
-              ? "You've got a sharp eye for phishing. Keep it up — attackers evolve every day."
-              : scorePercent >= 60
-              ? "You caught most of them, but some tricky ones slipped through. Here's what to watch for."
-              : "Don't worry — these are realistic scenarios that fool experienced professionals. Here's what you learned today."}
-          </p>
 
-          {/* Vulnerability Profile (Private) */}
-          {Object.keys(vulnerabilities).length > 0 && (
-            <div className={styles.vulnSection}>
-              <h3 className={styles.vulnTitle}>
-                <Shield size={16} style={{ marginRight: 8, verticalAlign: 'text-bottom' }} />
-                Your Vulnerability Profile (Private — only you see this)
-              </h3>
-              <div className={styles.vulnGrid}>
-                {allTriggers.map(trigger => {
-                  const val = vulnerabilities[trigger] || 0;
-                  const percent = maxVuln > 0 ? (val / maxVuln) * 100 : 0;
-                  const label = trigger.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
-                  return (
-                    <div key={trigger} className={styles.vulnRow}>
-                      <span className={styles.vulnLabel}>{label}</span>
-                      <div className={styles.vulnBar}>
-                        <div className={styles.vulnFill} style={{ width: `${percent}%`, background: getVulnColor(val) }} />
-                      </div>
-                      <span className={styles.vulnValue} style={{ color: getVulnColor(val) }}>{val > 0 ? 'Vulnerable' : 'Strong'}</span>
-                    </div>
-                  );
-                })}
+          <div className={styles.passportContainer}>
+            <div className={styles.passport} id="security-passport">
+              <div className={styles.passportHeader}>
+                <Shield size={24} color="var(--accent-gold)" />
+                <div className={styles.passportTitle}>
+                  <h3>SECURITY PASSPORT</h3>
+                  <span>ThreatMirror Intelligence System</span>
+                </div>
+              </div>
+              <div className={styles.passportBody}>
+                <div className={styles.passportField}>
+                  <label>NAME</label>
+                  <div>{userProfile.name}</div>
+                </div>
+                <div className={styles.passportField}>
+                  <label>ROLE</label>
+                  <div>{userProfile.role}</div>
+                </div>
+                <div className={styles.passportField}>
+                  <label>VULNERABILITY SCORE</label>
+                  <div style={{ color: getScoreColor() }}>{100 - scorePercent}%</div>
+                </div>
+                <div className={styles.passportField}>
+                  <label>TOP TRIGGER</label>
+                  <div>{topWeakness.toUpperCase()}</div>
+                </div>
+                <div className={styles.passportField}>
+                  <label>TIER</label>
+                  <div className={styles.tierBadge}>{userProfile.tier}</div>
+                </div>
+                <div className={styles.passportField}>
+                  <label>DATE</label>
+                  <div>{new Date().toLocaleDateString()}</div>
+                </div>
+              </div>
+              <div className={styles.passportFooter}>
+                <div className={styles.barcode} />
+                <span>AUTHORIZED BY THREATMIRROR AI</span>
               </div>
             </div>
-          )}
-
-          <div className={styles.privacyNote}>
-            🔒 In the full version, this quiz is built from emails you actually received that week.
-            No email content is ever stored or shared. All analysis happens on your device.
+            <button className={styles.printBtn} onClick={handlePrint}>
+              Download / Print Passport
+            </button>
           </div>
 
           <div className={styles.actions}>
@@ -232,7 +218,7 @@ export default function Quiz() {
               <RotateCcw size={14} /> Try Another Role
             </button>
             <Link to="/onboard" className="btn btn-primary">
-              Start Onboarding <ArrowRight size={14} />
+              Update Profile <ArrowRight size={14} />
             </Link>
           </div>
         </div>

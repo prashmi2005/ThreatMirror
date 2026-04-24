@@ -138,29 +138,67 @@
   gap: 12px;
 }
 
+.hud {
+  margin-right: 8px;
+}
+
+.coinBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(197, 160, 89, 0.1);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  padding: 4px 12px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(197, 160, 89, 0.1);
+  transition: all 0.3s ease;
+}
+
+.coinBadge:hover {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
+  transform: translateY(-1px);
+}
+
+.coinIcon {
+  color: var(--accent-gold);
+  filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.5));
+}
+
+.coinCount {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.coinLabel {
+  color: var(--accent-gold);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+}
+
 .themeToggle {
   background: transparent;
   border: 1px solid var(--border-primary);
   color: var(--text-secondary);
-  padding: 6px 12px;
+  padding: 8px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
   cursor: pointer;
   transition: all var(--transition-fast);
+  border-radius: 4px;
 }
 
 .themeToggle:hover {
   border-color: var(--accent-gold);
   color: var(--accent-gold);
   background: rgba(197, 160, 89, 0.05);
-}
-
-.themeText {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  font-weight: 600;
 }
 
 .mobileToggle {

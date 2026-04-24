@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Shield, Menu, X, Eye, EyeOff } from 'lucide-react';
+import { Shield, Menu, X, Sun, Moon, Coins } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
 import styles from './Navbar.module.css';
 
 const navItems = [
@@ -11,6 +12,7 @@ const navItems = [
   { path: '/quiz', label: 'Quiz' },
   { path: '/onboard', label: 'Onboard' },
   { path: '/team', label: 'Team' },
+  { path: '/rewards', label: 'Rewards' },
   { path: '/dashboard', label: 'Dashboard' },
 ];
 
@@ -19,6 +21,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const { shieldCoins } = useUser();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -57,15 +60,20 @@ export default function Navbar() {
           </ul>
 
           <div className={styles.navRight}>
+            <div className={styles.hud}>
+              <div className={styles.coinBadge}>
+                <Shield size={14} className={styles.coinIcon} />
+                <span className={styles.coinCount}>{shieldCoins.toLocaleString()}</span>
+                <span className={styles.coinLabel}>ShieldCoins</span>
+              </div>
+            </div>
+
             <button 
               onClick={toggleTheme} 
               className={styles.themeToggle}
-              title="Toggle Simple / Accessibility Mode"
+              title="Toggle Theme"
             >
-              {theme === 'dark' ? <Eye size={18} /> : <EyeOff size={18} />}
-              <span className={styles.themeText}>
-                {theme === 'dark' ? 'SIMPLIFY' : 'PRESTIGE'}
-              </span>
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
             <button
               className={styles.mobileToggle}

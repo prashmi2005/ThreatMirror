@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Fingerprint, Globe, Heart, ChevronRight } from 'lucide-react';
+import { ArrowRight, Fingerprint, Globe, Heart, ChevronRight, AlertCircle, X } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useAnimations';
 import styles from './Home.module.css';
 
@@ -17,8 +18,24 @@ function AnimatedSection({ children, className = '', delay = 0 }) {
 }
 
 export default function Home() {
+  const [bannerVisible, setBannerVisible] = useState(true);
+
   return (
     <div className={styles.home}>
+      {bannerVisible && (
+        <div className={styles.threatBanner}>
+          <div className={styles.bannerContent}>
+            <AlertCircle size={18} className={styles.bannerIcon} />
+            <p>
+              <strong>Threat of the Week:</strong> Fake IT helpdesk emails surging in Finance sector — see how to spot them.
+            </p>
+            <Link to="/quiz" className={styles.bannerCta}>Take the 2-min quiz</Link>
+          </div>
+          <button className={styles.bannerClose} onClick={() => setBannerVisible(false)}>
+            <X size={18} />
+          </button>
+        </div>
+      )}
       {/* Hero */}
       <section className={styles.hero}>
         <div className={styles.heroGlow} />

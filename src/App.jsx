@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { UserProvider } from './context/UserContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -9,6 +10,7 @@ import Onboard from './pages/Onboard';
 import Team from './pages/Team';
 import Extension from './pages/Extension';
 import Dashboard from './pages/Dashboard';
+import Rewards from './pages/Rewards';
 import AiCoach from './components/AiCoach';
 import Bootloader from './components/Bootloader';
 import { useState, useEffect } from 'react';
@@ -45,6 +47,7 @@ function AppRoutes() {
           <Route path="/onboard" element={<Onboard />} />
           <Route path="/team" element={<Team />} />
           <Route path="/extension" element={<Extension />} />
+          <Route path="/rewards" element={<Rewards />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </main>
@@ -57,9 +60,11 @@ function AppRoutes() {
 export default function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <UserProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </UserProvider>
     </ThemeProvider>
   );
 }
