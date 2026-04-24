@@ -4,7 +4,6 @@
   background: var(--bg-deep);
   color: var(--text-primary);
   overflow: hidden;
-  padding-top: 80px; /* Offset for navbar */
 }
 
 /* Sidebar */
@@ -67,6 +66,14 @@
   background: var(--accent-gold);
   color: #000;
   font-weight: 600;
+}
+
+.sidebarFooter {
+  padding: 12px;
+  border-top: 1px solid var(--border-gold);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 /* Main Content */

@@ -28,6 +28,8 @@ function ScrollToTop() {
 
 function AppRoutes() {
   const [booted, setBooted] = useState(false);
+  const location = useLocation();
+  const isDashboard = location.pathname === '/dashboard';
 
   return (
     <>
@@ -38,7 +40,7 @@ function AppRoutes() {
       <div className="hex-grid" />
       {!booted && <Bootloader onComplete={() => setBooted(true)} />}
       <div className="grid-bg" />
-      <Navbar />
+      {!isDashboard && <Navbar />}
       <main style={{ minHeight: '100vh', opacity: booted ? 1 : 0, transition: 'opacity 1s ease-in' }}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -52,7 +54,7 @@ function AppRoutes() {
         </Routes>
       </main>
       {booted && <AiCoach />}
-      <Footer />
+      {!isDashboard && <Footer />}
     </>
   );
 }
