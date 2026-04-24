@@ -7,13 +7,10 @@ import styles from './Navbar.module.css';
 
 const navItems = [
   { path: '/', label: 'Home' },
-  { path: '/features', label: 'Features' },
-  { path: '/extension', label: 'Extension' },
   { path: '/quiz', label: 'Quiz' },
-  { path: '/onboard', label: 'Onboard' },
-  { path: '/team', label: 'Team' },
   { path: '/rewards', label: 'Rewards' },
-  { path: '/dashboard', label: 'Dashboard' },
+  { path: '/profile', label: 'Profile' },
+  { path: '/dashboard', label: 'Admin' },
 ];
 
 export default function Navbar() {
