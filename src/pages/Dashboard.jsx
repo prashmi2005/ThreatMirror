@@ -3,31 +3,255 @@ import { Link } from 'react-router-dom';
 import { 
   Shield, Users, BookOpen, AlertTriangle, BarChart2, 
   Settings, Award, Mail, Menu, X, ChevronRight, 
-  TrendingUp, Activity, Bell, FileText, CheckCircle,
-  LogOut, Home as HomeIcon
+  TrendingUp, Activity, Bell, FileText, CheckCircle
 } from 'lucide-react';
-import { overviewData, teamData } from '../data/dashboardData';
+import { overviewData, teamData, threatFeed, outboundLogs } from '../data/dashboardData';
 import styles from './Dashboard.module.css';
+
+// Sub-components for tabs
+const OverviewTab = () => (
+  <div className={styles.tabContent}>
+    <div className={styles.topRow}>
+      <div className={styles.scoreCard}>
+        <h3>Org Security Score</h3>
+        <div className={styles.scoreContainer}>
+          <svg className={styles.progressRing} width="160" height="160">
+            <circle className={styles.progressRingBg} cx="80" cy="80" r="70" />
+            <circle 
+              className={styles.progressRingFill} 
+              cx="80" cy="80" r="70" 
+              strokeDasharray={`${2 * Math.PI * 70}`}
+              strokeDashoffset={`${2 * Math.PI * 70 * (1 - overviewData.orgScore / 100)}`}
+              stroke={overviewData.orgScore < 50 ? '#ef4444' : overviewData.orgScore < 75 ? '#f59e0b' : '#10b981'}
+            />
+            <text x="80" y="85" className={styles.scoreText}>{overviewData.orgScore}</text>
+            <text x="80" y="105" className={styles.scoreLabel}>/100</text>
+          </svg>
+        </div>
+        <p className={styles.scoreStatus}>
+          Status: <span style={{ color: overviewData.orgScore < 75 ? '#f59e0b' : '#10b981' }}>Amber (Caution)</span>
+        </p>
+      </div>
+
+      <div className={styles.kpiGrid}>
+        {overviewData.metrics.map((metric, i) => (
+          <div key={i} className={styles.kpiCard}>
+            <div className={styles.kpiHeader}>
+              <span className={styles.kpiIcon} style={{ color: metric.color, background: `${metric.color}15` }}>
+                {metric.icon === 'Users' && <Users size={18} />}
+                {metric.icon === 'Shield' && <Shield size={18} />}
+                {metric.icon === 'BookOpen' && <BookOpen size={18} />}
+                {metric.icon === 'AlertTriangle' && <AlertTriangle size={18} />}
+              </span>
+              <span className={styles.kpiChange}>{metric.change}</span>
+            </div>
+            <div className={styles.kpiValue}>{metric.value}</div>
+            <div className={styles.kpiLabel}>{metric.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div className={styles.tableSection}>
+      <h3>Department breakdown</h3>
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Department</th>
+              <th>Employees</th>
+              <th>Quiz Completion %</th>
+              <th>Avg Vulnerability Score</th>
+              <th>Top Weakness</th>
+            </tr>
+          </thead>
+          <tbody>
+            {overviewData.departmentBreakdown.map((dept, i) => (
+              <tr key={i}>
+                <td>{dept.dept}</td>
+                <td>{dept.employees}</td>
+                <td>
+                  <div className={styles.progressCell}>
+                    <div className={styles.miniBar}>
+                      <div className={styles.miniFill} style={{ width: `${dept.completion}%` }} />
+                    </div>
+                    {dept.completion}%
+                  </div>
+                </td>
+                <td>
+                  <span className={styles.scoreBadge} style={{ 
+                    background: dept.score > 80 ? '#10b98120' : dept.score > 60 ? '#f59e0b20' : '#ef444420',
+                    color: dept.score > 80 ? '#10b981' : dept.score > 60 ? '#f59e0b' : '#ef4444'
+                  }}>
+                    {dept.score}
+                  </span>
+                </td>
+                <td>{dept.weakness}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+);
+
+const TeamsTab = () => {
+  const [showNames, setShowNames] = useState(false);
+  return (
+    <div className={styles.tabContent}>
+      <div className={styles.tabHeader}>
+        <h3>Employee Roster</h3>
+        <button className={styles.toggleBtn} onClick={() => setShowNames(!showNames)}>
+          {showNames ? 'Anonymize Names' : 'Reveal Names'} (GDPR-safe)
+        </button>
+      </div>
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Role</th>
+              <th>Risk Level</th>
+              <th>Quiz Streak</th>
+              <th>Rewards</th>
+              <th>Last Active</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {teamData.map((emp) => (
+              <tr key={emp.id}>
+                <td>
+                  <div className={styles.userCell}>
+                    <div className={styles.avatar}>{emp.name.split(' ').map(n => n[0]).join('')}</div>
+                    <span>{showNames ? emp.name : `Defender #${emp.id}`}</span>
+                  </div>
+                </td>
+                <td>{emp.role}</td>
+                <td>
+                  <span className={`${styles.badge} ${styles[emp.risk.toLowerCase()]}`}>
+                    {emp.risk}
+                  </span>
+                </td>
+                <td>{emp.streak} 🔥</td>
+                <td>{emp.points}</td>
+                <td>{emp.lastActive}</td>
+                <td>
+                  <button className={styles.nudgeBtn}>Nudge</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+const ThreatFeedTab = () => (
+  <div className={styles.tabContent}>
+    <div className={styles.tabHeader}>
+      <h3>Live Threat Feed</h3>
+      <div className={styles.filters}>
+        <select className={styles.filterSelect}>
+          <option>All Severities</option>
+          <option>Critical</option>
+          <option>High</option>
+        </select>
+      </div>
+    </div>
+    <div className={styles.feedList}>
+      {threatFeed.map(threat => (
+        <div key={threat.id} className={styles.feedItem}>
+          <div className={styles.feedMeta}>
+            <span className={styles.feedTime}>{threat.time}</span>
+            <span className={`${styles.badge} ${styles[threat.severity.toLowerCase()]}`}>
+              {threat.severity}
+            </span>
+          </div>
+          <div className={styles.feedMain}>
+            <h4>{threat.type} detected in {threat.dept}</h4>
+            <p>{threat.summary}</p>
+          </div>
+          <ChevronRight size={16} />
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const OutboundLogsTab = () => (
+  <div className={styles.tabContent}>
+    <h3>Outbound Email Logs (Shadow-Mail Gateway)</h3>
+    <div className={styles.tableWrapper}>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th>Sender</th>
+            <th>Recipient</th>
+            <th>Submitted At</th>
+            <th>AI Risk Score</th>
+            <th>Tone</th>
+            <th>Status</th>
+            <th>Review</th>
+          </tr>
+        </thead>
+        <tbody>
+          {outboundLogs.map(log => (
+            <tr key={log.id}>
+              <td>{log.sender}</td>
+              <td>{log.recipient}</td>
+              <td>{log.time}</td>
+              <td>
+                <span className={styles.scoreBadge} style={{ 
+                  color: log.riskScore > 70 ? '#ef4444' : '#10b981'
+                }}>
+                  {log.riskScore}/100
+                </span>
+              </td>
+              <td>{log.tone}</td>
+              <td>
+                <span className={`${styles.statusBadge} ${styles[log.status.toLowerCase()]}`}>
+                  {log.status}
+                </span>
+              </td>
+              <td>
+                <button className={styles.reviewBtn}>Review</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+);
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('Overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [showNames, setShowNames] = useState(false);
 
   const tabs = [
     { id: 'Overview', icon: BarChart2 },
     { id: 'Teams', icon: Users },
+    { id: 'Quiz Analytics', icon: Activity },
+    { id: 'Threat Feed', icon: AlertTriangle },
+    { id: 'Rewards', icon: Award },
+    { id: 'Outbound Logs', icon: Mail },
     { id: 'Settings', icon: Settings },
   ];
 
   return (
     <div className={styles.dashboardContainer}>
+      {/* Sidebar */}
       <aside className={`${styles.sidebar} ${sidebarOpen ? styles.open : styles.closed}`}>
         <div className={styles.sidebarHeader}>
           <Shield size={24} color="var(--accent-gold)" />
-          {sidebarOpen && <span className={styles.brandName}>Admin Panel</span>}
+          {sidebarOpen && <span className={styles.brandName}>ThreatMirror</span>}
+          <button className={styles.mobileClose} onClick={() => setSidebarOpen(!sidebarOpen)}>
+            {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
-        
         <nav className={styles.sideNav}>
           {tabs.map(tab => (
             <button 
@@ -40,134 +264,46 @@ export default function Dashboard() {
             </button>
           ))}
         </nav>
-
+        
         <div className={styles.sidebarFooter}>
           <Link to="/" className={styles.navItem}>
-            <HomeIcon size={20} />
-            {sidebarOpen && <span>Main Site</span>}
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            {sidebarOpen && <span>Back to Home</span>}
           </Link>
           <button className={styles.navItem}>
-            <LogOut size={20} />
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
             {sidebarOpen && <span>Logout</span>}
           </button>
         </div>
       </aside>
 
+      {/* Main Content */}
       <main className={styles.mainContent}>
         <header className={styles.contentHeader}>
-          <div className={styles.headerLeft}>
-            <button className={styles.menuToggle} onClick={() => setSidebarOpen(!sidebarOpen)}>
-              <Menu size={20} />
-            </button>
-            <h2>{activeTab}</h2>
-          </div>
+          <h2>{activeTab}</h2>
           <div className={styles.headerActions}>
+            <button className={styles.iconBtn}><Bell size={20} /></button>
             <div className={styles.adminUser}>
               <div className={styles.adminAvatar}>AD</div>
-              <span>Admin Mode</span>
+              <span>Admin</span>
             </div>
           </div>
         </header>
 
         <div className={styles.scrollArea}>
-          {activeTab === 'Overview' && (
-            <div className={styles.tabContent}>
-              <div className={styles.topRow}>
-                <div className={styles.scoreCard}>
-                  <h3>Org Security Score</h3>
-                  <div className={styles.scoreValue}>{overviewData.orgScore}</div>
-                  <div className={styles.scoreBar}><div className={styles.scoreFill} style={{ width: `${overviewData.orgScore}%`, background: overviewData.orgScore > 70 ? 'var(--accent-green)' : 'var(--accent-orange)' }} /></div>
-                  <p>Average safety rating across 4 departments</p>
-                </div>
-
-                <div className={styles.kpiGrid}>
-                  {overviewData.metrics.map((metric, i) => (
-                    <div key={i} className={styles.kpiCard}>
-                      <div className={styles.kpiValue}>{metric.value}</div>
-                      <div className={styles.kpiLabel}>{metric.label}</div>
-                      <div className={styles.kpiChange} style={{ color: metric.change.startsWith('+') ? 'var(--accent-green)' : 'var(--accent-red)' }}>{metric.change} this month</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className={styles.tableSection}>
-                <h3>Department Performance</h3>
-                <div className={styles.tableWrapper}>
-                  <table className={styles.table}>
-                    <thead>
-                      <tr>
-                        <th>Department</th>
-                        <th>Employees</th>
-                        <th>Completion</th>
-                        <th>Risk Score</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {overviewData.departmentBreakdown.map((dept, i) => (
-                        <tr key={i}>
-                          <td>{dept.dept}</td>
-                          <td>{dept.employees}</td>
-                          <td>{dept.completion}%</td>
-                          <td>
-                            <span className={styles.scoreBadge} style={{ 
-                              color: dept.score > 80 ? 'var(--accent-green)' : 'var(--accent-orange)'
-                            }}>
-                              {dept.score}/100
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'Teams' && (
-            <div className={styles.tabContent}>
-              <div className={styles.tabHeader}>
-                <h3>Employee Risk Assessment</h3>
-                <button className={styles.toggleBtn} onClick={() => setShowNames(!showNames)}>
-                  {showNames ? 'Privacy Mode ON' : 'Show Full Names'}
-                </button>
-              </div>
-              <div className={styles.tableWrapper}>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>Employee</th>
-                      <th>Risk Level</th>
-                      <th>Coins</th>
-                      <th>Last Active</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {teamData.map((emp) => (
-                      <tr key={emp.id}>
-                        <td>{showNames ? emp.name : `User #${emp.id}`}</td>
-                        <td>
-                          <span className={`${styles.badge} ${styles[emp.risk.toLowerCase()]}`}>
-                            {emp.risk}
-                          </span>
-                        </td>
-                        <td>{emp.points}</td>
-                        <td>{emp.lastActive}</td>
-                        <td><button className={styles.nudgeBtn}>Nudge</button></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-          
-          {activeTab === 'Settings' && (
+          {activeTab === 'Overview' && <OverviewTab />}
+          {activeTab === 'Teams' && <TeamsTab />}
+          {activeTab === 'Threat Feed' && <ThreatFeedTab />}
+          {activeTab === 'Outbound Logs' && <OutboundLogsTab />}
+          {(activeTab === 'Quiz Analytics' || activeTab === 'Rewards' || activeTab === 'Settings') && (
             <div className={styles.stub}>
-              <h3>Admin Settings</h3>
-              <p>Configure organization-wide security policies and reward tiers.</p>
+              <div className={styles.stubIcon}>
+                {activeTab === 'Quiz Analytics' && <Activity size={48} />}
+                {activeTab === 'Rewards' && <Award size={48} />}
+                {activeTab === 'Settings' && <Settings size={48} />}
+              </div>
+              <h3>{activeTab} Module</h3>
+              <p>This module is coming soon in the next update.</p>
             </div>
           )}
         </div>

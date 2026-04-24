@@ -8,18 +8,25 @@
   margin-bottom: 48px;
 }
 
-.simpleStats {
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-  margin-bottom: 60px;
-}
-
-.statBox {
+/* Top Balance HUD */
+.topHud {
   background: var(--bg-card);
   border: 1px solid var(--border-gold);
-  padding: 20px 40px;
-  border-radius: 16px;
+  border-radius: 24px;
+  padding: 32px;
+  margin-bottom: 60px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.mainBalance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.coinRing {
   display: flex;
   align-items: center;
   gap: 20px;
@@ -27,132 +34,236 @@
 
 .goldIcon {
   color: var(--accent-gold);
+  filter: drop-shadow(0 0 10px rgba(197, 160, 89, 0.4));
 }
 
-.statInfo {
-  display: flex;
-  flex-direction: column;
-}
-
-.statVal {
-  font-size: 1.8rem;
+.amount {
+  display: block;
+  font-size: 3.5rem;
   font-weight: 800;
   line-height: 1;
+  color: var(--text-primary);
 }
 
-.statLabel {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+.currency {
+  font-size: 0.9rem;
+  color: var(--accent-gold);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-top: 4px;
+  font-weight: 600;
+}
+
+.tierStatus {
+  min-width: 250px;
+}
+
+.tierHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.tierName {
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.miniProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progressTrack {
+  height: 6px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressThumb {
+  height: 100%;
+  transition: width 1s ease;
+}
+
+.miniProgress span {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Catalog */
+.catalogHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  color: var(--accent-gold);
 }
 
 .catalogGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 24px;
+  margin-bottom: 60px;
 }
 
-.rewardCard {
+.voucherCard {
   background: var(--bg-card);
   border: 1px solid var(--border-gold);
-  padding: 24px;
-  border-radius: 20px;
-  transition: all 0.3s ease;
-}
-
-.rewardCard:hover {
-  transform: translateY(-5px);
-  border-color: var(--accent-gold);
-  box-shadow: 0 10px 30px rgba(197, 160, 89, 0.1);
-}
-
-.rewardTop {
+  border-radius: 16px;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20px;
+  overflow: hidden;
+  transition: transform 0.2s;
+  height: 160px;
 }
 
-.brandLogo {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
+.voucherCard:hover {
+  transform: translateY(-4px);
+}
+
+.voucherMain {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.brandInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brandIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
   font-weight: 800;
 }
 
-.categoryBadge {
+.brandName {
   font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.voucherTitle {
+  font-size: 1.1rem;
   font-weight: 700;
-  color: var(--text-secondary);
-  background: rgba(255,255,255,0.05);
-  padding: 4px 10px;
-  border-radius: 20px;
+  color: var(--text-primary);
 }
 
-.rewardName {
-  font-size: 1.2rem;
-  margin-bottom: 8px;
-}
-
-.rewardDesc {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin-bottom: 24px;
-  height: 40px;
+.voucherDesc {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  margin: 8px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.rewardFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid rgba(255,255,255,0.05);
-  padding-top: 20px;
-}
-
-.cost {
+.voucherPrice {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-weight: 700;
   color: var(--accent-gold);
+  font-weight: 700;
+  font-size: 0.9rem;
 }
 
-.redeemBtn {
+.voucherSide {
+  width: 100px;
+  background: rgba(255,255,255,0.02);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.stubLine {
+  position: absolute;
+  left: 0;
+  top: 10%;
+  bottom: 10%;
+  border-left: 2px dashed rgba(255,255,255,0.1);
+}
+
+.actionBtn {
   background: var(--accent-gold);
   color: #000;
   border: none;
-  padding: 8px 20px;
-  border-radius: 8px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
   font-weight: 700;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
 }
 
-.redeemBtn:disabled {
+.actionBtn:hover:not(:disabled) {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(197, 160, 89, 0.5);
+}
+
+.actionBtn:disabled {
   background: rgba(255,255,255,0.05);
   color: var(--text-secondary);
   cursor: not-allowed;
 }
 
-.earningNote {
-  text-align: center;
-  margin-top: 60px;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  font-style: italic;
+.locked {
+  opacity: 0.7;
+}
+
+/* History */
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.historyItem {
+  background: var(--bg-card);
+  padding: 16px 24px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+.txAction {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.txDate {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.txPoints {
+  color: #10b981;
+  font-weight: 700;
+  font-family: var(--font-mono);
 }
 
 @media (max-width: 768px) {
-  .simpleStats { flex-direction: column; gap: 16px; align-items: center; }
-  .statBox { width: 100%; max-width: 300px; }
+  .mainBalance { justify-content: center; text-align: center; }
+  .coinRing { flex-direction: column; }
+  .catalogGrid { grid-template-columns: 1fr; }
 }
