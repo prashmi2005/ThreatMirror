@@ -1,0 +1,41 @@
+.team { padding-top: 160px; padding-bottom: 80px; min-height: 100vh; position: relative; z-index: 1; }
+.header { text-align: center; margin-bottom: 80px; }
+
+.profiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 60px; }
+
+.profileCard { border-radius: var(--radius-xl); background: var(--bg-card); border: 1px solid var(--border-secondary); overflow: hidden; transition: all var(--transition-normal); }
+.profileCard:hover { border-color: var(--border-glow); box-shadow: var(--shadow-glow); }
+
+.profileTop { padding: 28px; display: flex; gap: 20px; align-items: center; border-bottom: 1px solid var(--border-secondary); }
+.avatar { font-size: 48px; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--gradient-card); border: 2px solid var(--border-primary); }
+.profileInfo h3 { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.profileInfo .role { font-size: 14px; color: var(--text-accent); margin-bottom: 4px; }
+.profileInfo .bio { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; }
+
+.tabs { display: flex; border-bottom: 1px solid var(--border-secondary); }
+.tab { flex: 1; padding: 12px; text-align: center; font-size: 13px; font-weight: 500; color: var(--text-tertiary); cursor: pointer; border-bottom: 2px solid transparent; transition: all var(--transition-fast); background: none; }
+.tab:hover { color: var(--text-secondary); }
+.tab.active { color: var(--text-accent); border-bottom-color: var(--accent-cyan); }
+
+.tabContent { padding: 24px; min-height: 260px; }
+
+.threatItem { padding: 12px 16px; border-radius: var(--radius-md); background: var(--bg-tertiary); border: 1px solid var(--border-secondary); margin-bottom: 8px; }
+.threatHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.threatType { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+.threatDesc { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+.emailItem { padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-secondary); margin-bottom: 10px; cursor: default; transition: all var(--transition-fast); }
+.emailItem:hover { border-color: var(--border-glow); }
+.emailLevel { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 8px; border-radius: var(--radius-full); margin-bottom: 8px; }
+.emailSubject { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+.emailSender { font-size: 12px; color: var(--text-tertiary); margin-bottom: 6px; }
+.emailPreview { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.emailFlags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.emailFlag { font-size: 10px; padding: 2px 8px; border-radius: var(--radius-full); background: rgba(239,68,68,0.08); color: var(--accent-red); }
+
+/* Concept Banner */
+.conceptBanner { max-width: 700px; margin: 0 auto; text-align: center; padding: 40px; border-radius: var(--radius-xl); background: var(--gradient-card); border: 1px solid var(--border-primary); }
+.conceptTitle { font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
+.conceptDesc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+
+@media (max-width: 768px) { .profiles { grid-template-columns: 1fr; } }

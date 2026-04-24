@@ -1,0 +1,80 @@
+.quiz { padding-top: 160px; padding-bottom: 80px; min-height: 100vh; position: relative; z-index: 1; }
+.header { text-align: center; margin-bottom: 64px; }
+
+/* Role Selection */
+.roleGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 700px; margin: 0 auto 20px; }
+.roleCard { background: var(--bg-card); border: 1px solid var(--border-primary); border-radius: var(--radius-lg); padding: 16px; text-align: center; cursor: pointer; transition: all var(--transition-normal); position: relative; }
+.roleCard::before, .roleCard::after { content: ''; position: absolute; width: 12px; height: 12px; border: 2px solid var(--accent-gold); transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); opacity: 0; pointer-events: none; }
+.roleCard::before { top: 6px; left: 6px; border-right: none; border-bottom: none; transform: translate(-5px, -5px); }
+.roleCard::after { bottom: 6px; right: 6px; border-left: none; border-top: none; transform: translate(5px, 5px); }
+
+.roleCard:hover { border-color: var(--accent-gold); background: rgba(197, 160, 89, 0.05); }
+.roleCard:hover::before, .roleCard:hover::after { opacity: 1; transform: translate(0, 0); }
+
+.roleCard.active { border-color: var(--accent-cyan); background: rgba(15, 240, 252, 0.1); }
+.roleCard.active::before, .roleCard.active::after { border-color: var(--accent-cyan); opacity: 1; transform: translate(0, 0); }
+.roleIcon { display: inline-flex; justify-content: center; align-items: center; width: 48px; height: 48px; border-radius: 0; background: rgba(15, 240, 252, 0.1); color: var(--accent-cyan); margin-bottom: 12px; clip-path: polygon(20% 0%, 100% 0, 100% 80%, 80% 100%, 0 100%, 0% 20%); }
+.roleName { font-size: 14px; font-weight: 600; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Quiz Active */
+.quizActive { max-width: 700px; margin: 0 auto; }
+.progress { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+.progressBar { flex: 1; height: 4px; border-radius: 2px; background: var(--bg-tertiary); overflow: hidden; }
+.progressFill { height: 100%; background: var(--gradient-primary); border-radius: 2px; transition: width var(--transition-normal); }
+.progressText { font-size: 13px; color: var(--text-tertiary); min-width: 40px; text-align: right; }
+
+/* Email Preview */
+.scenarioWrapper { background: var(--bg-card); border: 1px solid var(--border-primary); border-radius: var(--radius-xl); padding: 32px; position: relative; overflow: hidden; clip-path: polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px)); }
+.scenarioWrapper::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--gradient-primary); }
+.emailSubject { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+.emailMeta { display: flex; gap: 16px; flex-wrap: wrap; }
+.emailFrom { font-size: 13px; color: var(--text-secondary); }
+.emailFrom strong { color: var(--text-tertiary); font-weight: 500; }
+.emailBody { padding: 24px; font-size: 14px; color: var(--text-secondary); line-height: 1.8; white-space: pre-line; }
+
+/* Answer Buttons */
+.answers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.answerBtn { padding: 16px; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; cursor: pointer; transition: all var(--transition-normal); border: 2px solid; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.safeBtn { background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.3); color: var(--accent-green); }
+.safeBtn:hover { background: rgba(16,185,129,0.12); border-color: var(--accent-green); }
+.phishBtn { background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.3); color: var(--accent-red); }
+.phishBtn:hover { background: rgba(239,68,68,0.12); border-color: var(--accent-red); }
+
+/* Feedback */
+.feedback { border-radius: var(--radius-lg); padding: 28px; margin-top: 20px; animation: fadeInUp 0.4s ease; }
+.feedbackCorrect { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); }
+.feedbackWrong { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); }
+.triggerBox { background: rgba(255, 0, 85, 0.1); border: 1px dashed var(--accent-magenta); border-radius: var(--radius-md); padding: 16px; margin-top: 16px; }
+.triggerHeader { display: flex; align-items: center; gap: 8px; color: var(--accent-magenta); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; font-family: var(--font-heading); }
+.triggerDesc { font-size: 14px; color: var(--text-secondary); font-family: var(--font-mono); line-height: 1.7; margin-bottom: 16px; }
+.flagsList { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.flag { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--accent-red); padding: 6px 12px; background: rgba(239,68,68,0.06); border-radius: var(--radius-sm); }
+.triggerBadge { display: inline-flex; padding: 4px 12px; border-radius: var(--radius-full); background: rgba(139,92,246,0.1); color: var(--accent-purple); font-size: 12px; font-weight: 500; }
+.nextBtn { margin-top: 16px; }
+
+/* Results */
+.results { max-width: 600px; margin: 0 auto; text-align: center; animation: fadeInUp 0.5s ease; }
+.scoreCircle { width: 140px; height: 140px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 28px; border: 3px solid; }
+.scoreNum { font-size: 36px; font-weight: 700; font-family: var(--font-heading); }
+.scoreLabel { font-size: 12px; color: var(--text-secondary); }
+.resultTitle { font-size: 24px; font-weight: 600; margin-bottom: 12px; color: var(--text-primary); }
+.resultDesc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 36px; }
+
+/* Vulnerability Profile */
+.vulnSection { margin-top: 40px; text-align: left; }
+.vulnTitle { font-size: 16px; font-weight: 600; margin-bottom: 20px; color: var(--text-primary); }
+.vulnGrid { display: flex; flex-direction: column; gap: 12px; }
+.vulnRow { display: flex; align-items: center; gap: 16px; }
+.vulnLabel { font-size: 13px; color: var(--text-secondary); min-width: 100px; }
+.vulnBar { flex: 1; height: 8px; border-radius: 4px; background: var(--bg-tertiary); overflow: hidden; }
+.vulnFill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+.vulnValue { font-size: 13px; font-weight: 600; min-width: 35px; text-align: right; }
+
+.privacyNote { margin-top: 32px; padding: 16px; border-radius: var(--radius-md); background: rgba(16,185,129,0.04); border: 1px solid rgba(16,185,129,0.15); font-size: 13px; color: var(--text-secondary); line-height: 1.6; text-align: center; }
+
+.actions { display: flex; gap: 12px; justify-content: center; margin-top: 24px; }
+
+@media (max-width: 768px) {
+  .roleGrid { grid-template-columns: repeat(2, 1fr); }
+  .answers { grid-template-columns: 1fr; }
+}
